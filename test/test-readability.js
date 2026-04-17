@@ -273,6 +273,14 @@ describe("Readability API", function () {
       );
     });
 
+    it("should accept a keepOriginalTitleHeaders option", function () {
+      expect(new Readability(doc)._keepOriginalTitleHeaders).eql(false);
+      expect(
+        new Readability(doc, { keepOriginalTitleHeaders: true })
+          ._keepOriginalTitleHeaders
+      ).eql(true);
+    });
+
     it("should accept a allowedVideoRegex option or default it", function () {
       expect(new Readability(doc)._allowedVideoRegex).eql(
         Readability.prototype.REGEXPS.videos
