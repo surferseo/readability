@@ -64,6 +64,12 @@ function Readability(doc, options) {
   this._disableJSONLD = !!options.disableJSONLD;
   this._allowedVideoRegex = options.allowedVideoRegex || this.REGEXPS.videos;
   this._linkDensityModifier = options.linkDensityModifier || 0;
+  /**
+   * If true, keep the first in-article H1/H2 that duplicates the article title
+   * and leave H1 tags in the extracted content. Defaults to false (strip the
+   * duplicate title header and normalize remaining H1 elements to H2).
+   */
+  this._keepOriginalTitleHeaders = !!options.keepOriginalTitleHeaders;
 
   // Start with all flags set
   this._flags =
@@ -835,11 +841,13 @@ Readability.prototype = {
     this._cleanConditionally(articleContent, "ul");
     this._cleanConditionally(articleContent, "div");
 
-    // replace H1 with H2 as H1 should be only title that is displayed separately
-    this._replaceNodeTags(
-      this._getAllNodesWithTag(articleContent, ["h1"]),
-      "h2"
-    );
+    if (!this._keepOriginalTitleHeaders) {
+      // replace H1 with H2 as H1 should be only title that is displayed separately
+      this._replaceNodeTags(
+        this._getAllNodesWithTag(articleContent, ["h1"]),
+        "h2"
+      );
+    }
 
     // Remove extra paragraphs
     this._removeNodes(
@@ -1064,7 +1072,7 @@ Readability.prototype = {
       var elementsToScore = [];
       var node = this._doc.documentElement;
 
-      let shouldRemoveTitleHeader = true;
+      let shouldRemoveTitleHeader = !this._keepOriginalTitleHeaders;
 
       while (node) {
         if (node.tagName === "HTML") {

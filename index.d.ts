@@ -75,6 +75,12 @@ export interface ReadabilityOptions<T = string> {
    * Defaults to 1.
    */
   linkDensityModifier?: number;
+  /**
+   * If `true`, the first in-article heading that closely matches the article
+   * title is kept, and H1 tags in the extracted content are not rewritten to H2.
+   * Defaults to `false`.
+   */
+  keepOriginalTitleHeaders?: boolean;
 }
 
 export class Readability<T = string> {
